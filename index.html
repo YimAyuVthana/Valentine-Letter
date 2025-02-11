@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Secret Valentine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ffebf0;
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .password-container {
+            margin: 50px 0 20px 0; /* Adjusted margin for smaller screens */
+            text-align: center;
+            background-image: url('https://media.istockphoto.com/id/1315221886/photo/pink-pale-millennial-grunge-marble-texture-abstract-putty-concrete-background-rose-gold.jpg?s=612x612&w=0&k=20&c=9y5HOKZlNPRS2rlWr-Jp4uJOu1wH1rPROP-6gkDuh5Y=');
+            background-size: cover;
+            padding: 20px;
+            border-radius: 10px;
+            animation: floatUp 1s ease;
+            width: 90%; /* Adjusted width for smaller screens */
+            max-width: 500px; /* Maximum width for larger screens */
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .password-container input {
+            padding: 10px;
+            font-size: 16px; /* Adjusted font size for smaller screens */
+            border: 2px solid #ff3366;
+            border-radius: 5px;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 100%; /* Full width on smaller screens */
+            max-width: 200px; /* Maximum width for larger screens */
+        }
+
+        .password-container button {
+            padding: 10px 20px;
+            font-size: 16px; /* Adjusted font size for smaller screens */
+            color: white;
+            background-color: #ff3366;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            width: 100%; /* Full width on smaller screens */
+            max-width: 200px; /* Maximum width for larger screens */
+        }
+
+        .password-container button:hover {
+            background-color: #ff6699;
+        }
+
+        .hint-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hint-content {
+            background: linear-gradient(135deg, #ff99cc 0%, #ff3366 100%);
+            padding: 20px; /* Adjusted padding for smaller screens */
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            animation: modalSlideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            max-width: 90%; /* Adjusted max-width for smaller screens */
+            width: 350px; /* Fixed width for larger screens */
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .hint-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 20%, rgba(255,255,255,0.1) 50%, transparent 80%);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .hint-content h2 {
+            margin: 0 0 15px 0;
+            font-size: 20px; /* Adjusted font size for smaller screens */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hint-content p {
+            font-size: 14px; /* Adjusted font size for smaller screens */
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .hint-content button {
+            padding: 10px 20px; /* Adjusted padding for smaller screens */
+            font-size: 14px; /* Adjusted font size for smaller screens */
+            background: white;
+            border: none;
+            border-radius: 25px;
+            color: #ff3366;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .hint-content button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            background: #fff0f5;
+        }
+
+        .scratch-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            height: 400px;
+            margin: 20px;
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .hidden-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            object-fit: cover;
+        }
+
+        .love-letter {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+        }
+
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: 0;
+            color: #ff3366;
+            font-size: 24px;
+            animation: float 5s infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(45deg); }
+            50% { transform: translateY(-50px) rotate(45deg); }
+            100% { transform: translateY(-100vh) rotate(45deg); }
+        }
+
+        h1 {
+            color: #ff3366;
+            text-align: center;
+            font-size: 24px; /* Adjusted font size for smaller screens */
+        }
+
+        /* Password Toggle Button */
+        .password-toggle {
+            display: inline-block;
+            padding: 10px;
+            font-size: 16px; /* Adjusted font size for smaller screens */
+            color: #ff3366;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ff3366;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        /* Credit Section */
+        .credit {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #ff3366;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 600px) {
+            .password-container {
+                margin: 20px 0;
+                padding: 15px;
+            }
+
+            .password-container input {
+                font-size: 14px;
+            }
+
+            .password-container button {
+                font-size: 14px;
+            }
+
+            .hint-content {
+                padding: 15px;
+            }
+
+            .hint-content h2 {
+                font-size: 18px;
+            }
+
+            .hint-content p {
+                font-size: 12px;
+            }
+
+            .hint-content button {
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .love-letter {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Protection -->
+    <div class="password-container" id="password-container">
+        <h1>Enter the password</h1>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <input type="password" id="password" placeholder="Enter password...">
+            <button class="password-toggle" onclick="togglePasswordVisibility()">👁️</button>
+        </div>
+        <button onclick="checkPassword()">Enter</button>
+    </div>
+
+    <!-- Hint Modal -->
+    <div class="hint-modal" id="hint-modal">
+        <div class="hint-content">
+            <h2>💖 Password Hint</h2>
+            <p>My nickname given by you</p>
+            <button onclick="closeHint()">Got it, thanks! 💌</button>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden by default) -->
+    <div id="content" style="display: none; flex-direction: column; align-items: center;">
+        <h1>Happy Valentine's Day! ❤️</h1>
+        
+        <!-- Scratch Card -->
+        <div class="scratch-container">
+            <img src="https://i.pinimg.com/736x/b6/83/7b/b6837bf93e076a6d87c471ba6d817cc0.jpg" class="hidden-image" alt="Our Photo">
+            <canvas id="scratch-canvas" width="300" height="400"></canvas>
+        </div>
+
+        <!-- Love Letter -->
+        <div class="love-letter">
+            <h2>My Dearest Valentine,</h2>
+            <div>My love for you transcends words, actions, feelings, and dreams. You are my everything, my all, more than I am myself. Every day, my love for you grows stronger, deeper, and more beautiful.
+
+                I love you more than you'll ever know, more than you can fathom, and more than you love me. My love for you increases with every breath, every heartbeat, every smile, every tear, and every moment we share. </div>
+            
+            <p>Forever yours,<br>Na</p>
+        </div>
+    </div>
+
+    <!-- Floating Hearts -->
+    <div class="hearts" id="hearts"></div>
+
+    <!-- Credit Section -->
+    <div class="credit">
+        Website by: Yim
+    </div>
+
+    <script>
+        // Password Protection
+        const correctPassword = "Na"; // Change this to your desired password
+        
+        function checkPassword() {
+            const input = document.getElementById('password').value;
+            if(input.toLowerCase() === correctPassword.toLowerCase()) {
+                document.getElementById('content').style.display = 'flex';
+                document.getElementById('password-container').style.display = 'none';
+                initScratchCard();
+                createHearts();
+            } else {
+                hintPassword();
+            }
+        }
+
+        // Password Hint
+        function hintPassword() {
+            document.getElementById('hint-modal').style.display = 'flex';
+        }
+
+        function closeHint() {
+            document.getElementById('hint-modal').style.display = 'none';
+        }
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.password-toggle');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = '👁️';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.textContent = '👁️';
+            }
+        }
+
+        // Scratch Card Implementation
+        function initScratchCard() {
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            // Set initial canvas state
+            ctx.fillStyle = '#cccccc';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-out';
+
+            // Event listeners
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            function startDrawing(e) {
+                isDrawing = true;
+                draw(e);
+            }
+
+            function draw(e) {
+                if(!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+        }
+
+        // Floating Hearts Animation
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for(let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+    </script>
+</body>
+</html>
